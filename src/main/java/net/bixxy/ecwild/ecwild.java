@@ -11,9 +11,6 @@ import org.bukkit.WorldBorder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ecwild extends JavaPlugin {
@@ -28,7 +25,7 @@ public final class ecwild extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		//TODO fix setBoundaries() to fire onEnable and on worldborder change
+		//TODO fix setBoundaries() to fire on Enable and on worldborder change
 		// setBoundaries();
 	}
 
