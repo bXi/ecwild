@@ -42,4 +42,15 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>bXi</name>
+			<url>https://maven.pkg.github.com/bXi/ecwild</url>
+		</repository>
+	</distributionManagement>
+
+
+
 </project>
