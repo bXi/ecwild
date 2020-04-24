@@ -27,7 +27,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         mkdir -p ~/.m2
-        echo "<settings><servers><server><id>gh</id><username>$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $1}')</username><password>\${env.GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
+        echo "<settings><servers><server><id>gh</id><username>x-access-token</username><password>611d4379c1e80c6d48395f17b8c20e3f47117b2f</password></server></servers></settings>" > ~/.m2/settings.xml
         cat  ~/.m2/settings.xml
         REPO="gh::default::https://maven.pkg.github.com/${GITHUB_REPOSITORY}"
         mvn deploy -DaltReleaseDeploymentRepository="${REPO}" -DaltSnapshotDeploymentRepository="${REPO}"
