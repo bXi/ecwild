@@ -22,3 +22,5 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Deploy package
+      run: mvn deploy -Dregistry=https://maven.pkg.github.com/bXi -Dtoken=3081e342ae9b9782bb6c3e6098b49d1f530ca9d5
