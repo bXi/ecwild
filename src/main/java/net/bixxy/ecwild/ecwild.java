@@ -6,8 +6,11 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.WorldBorder;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,7 +28,7 @@ public final class ecwild extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		//TODO fix setBoundaries() to fire on Enable and on worldborder change
+		// TODO fix setBoundaries() to fire on Enable and on worldborder change
 		// setBoundaries();
 	}
 
@@ -44,48 +47,84 @@ public final class ecwild extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("wild")) {
+		if (cmd.getName().equalsIgnoreCase("wild") || cmd.getName().equalsIgnoreCase("rtp")) {
 			if (sender instanceof Player) {
 
 				Player player = (Player) sender;
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+				if (player.getWorld().getEnvironment() == Environment.NORMAL) {
 
-				Long lastTimestamp = usages.get(player.getUniqueId());
+					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-				if (lastTimestamp != null && lastTimestamp + 5000 > timestamp.getTime()) {
-					sender.sendMessage("Please wait a bit.");
+					Long lastTimestamp = usages.get(player.getUniqueId());
+
+					if (lastTimestamp != null && lastTimestamp + 5000 > timestamp.getTime()) {
+						sender.sendMessage("Please wait a bit.");
+					} else {
+						doTeleportPlayer(sender, timestamp);
+						
+
+					}
+					return true;
 				} else {
-
-					setBoundaries();
-					Location loc = player.getLocation();
-
-					Location newloc = loc;
-
-					double newX = getRandomCoordinate(minX, maxX);
-					double newZ = getRandomCoordinate(minZ, maxZ);
-
-					newloc.setX(newX);
-					newloc.setZ(newZ);
-
-					World world = Bukkit.getWorld("world");
-
-					double newY = world.getHighestBlockYAt(newloc) + 1;
-
-					newloc.setY(newY);
-
-					player.teleport(newloc);
-
-					usages.put(player.getUniqueId(), timestamp.getTime());
-					sender.sendMessage("Teleporting!");
-
+					return true;
 				}
-				return true;
 			}
 
 		}
-		return false;
+		return true;
 	}
 
+	private boolean doTeleportPlayer(CommandSender sender, Timestamp timestamp) {
+		Player player = (Player) sender;
+
+		setBoundaries();
+		Location loc = player.getLocation();
+
+		Location newloc = loc;
+	
+		double newX = getRandomCoordinate(minX, maxX);
+		double newZ = getRandomCoordinate(minZ, maxZ);
+
+		newloc.setX(newX);
+		newloc.setZ(newZ);
+
+		World world = Bukkit.getWorld("world");
+		
+		double newY = world.getHighestBlockYAt(newloc);
+		newloc.setY(newY);
+
+		Block b = newloc.getBlock();
+		
+		for (int i = 5; i < 1; i--) {
+		
+						
+			b = newloc.getBlock();
+
+            if (!b.getType().equals(Material.LAVA)){
+            	break;
+            }
+
+            newX = getRandomCoordinate(minX, maxX);
+    		newZ = getRandomCoordinate(minZ, maxZ);
+
+    		newloc.setX(newX);
+    		newloc.setZ(newZ);
+    		
+    		newY = world.getHighestBlockYAt(newloc);
+    		newloc.setY(newY);
+		}
+		
+		newloc.setY(newY + 1);
+
+		player.teleport(newloc);
+
+		usages.put(player.getUniqueId(), timestamp.getTime());
+		sender.sendMessage("Teleporting!");
+		
+		return true;
+	}
+	
+	
 	private double getRandomCoordinate(double min, double max) {
 		return Math.floor(Math.random() * (max - min + 1) + min) + 0.5;
 	}

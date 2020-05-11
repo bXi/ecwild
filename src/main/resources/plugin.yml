@@ -1,7 +1,10 @@
 name: EcWild
 main: net.bixxy.ecwild.ecwild
-version: 0.1
+version: 0.0.2
 commands:
   wild:
     description: Teleports the player to a random place in the world.
     usage: /wild
+  rtp:
+    description: Teleports the player to a random place in the world.
+    usage: /rtp
