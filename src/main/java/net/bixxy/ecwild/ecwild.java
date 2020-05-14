@@ -96,8 +96,6 @@ public final class ecwild extends JavaPlugin {
 		Block b = newloc.getBlock();
 		
 		for (int i = 5; i < 1; i--) {
-		
-						
 			b = newloc.getBlock();
 
             if (!b.getType().equals(Material.LAVA)){
