@@ -30,6 +30,7 @@ public final class ecwild extends JavaPlugin {
 	public void onEnable() {
 		// TODO fix setBoundaries() to fire on Enable and on worldborder change
 		// setBoundaries();
+		// add water detection
 	}
 
 	private void setBoundaries() {
