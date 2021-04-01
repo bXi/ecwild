@@ -26,6 +26,7 @@ public final class ecwild extends JavaPlugin {
 
 	private HashMap<UUID, Long> usages = new HashMap<UUID, Long>();
 
+	
 	@Override
 	public void onEnable() {
 		// TODO fix setBoundaries() to fire on Enable and on worldborder change
@@ -33,8 +34,8 @@ public final class ecwild extends JavaPlugin {
 		// add water detection
 	}
 
-	private void setBoundaries() {
-		WorldBorder b = Bukkit.getWorld("world").getWorldBorder();
+	private void setBoundaries(World world) {
+		WorldBorder b = world.getWorldBorder();
 
 		Location center = b.getCenter();
 		width = b.getSize();
@@ -58,12 +59,10 @@ public final class ecwild extends JavaPlugin {
 
 					Long lastTimestamp = usages.get(player.getUniqueId());
 
-					if (lastTimestamp != null && lastTimestamp + 5000 > timestamp.getTime()) {
+					if (!player.isOp() || lastTimestamp != null && lastTimestamp + 5000 > timestamp.getTime()) {
 						sender.sendMessage("Please wait a bit.");
 					} else {
 						doTeleportPlayer(sender, timestamp);
-						
-
 					}
 					return true;
 				} else {
@@ -75,10 +74,32 @@ public final class ecwild extends JavaPlugin {
 		return true;
 	}
 
+	
+	public boolean isForbidden(Block b) {
+		
+		boolean found = false;
+        if (b.getType().equals(Material.LAVA)){
+        	found = true;
+        } else if (b.getType().equals(Material.WATER)){
+        	found = true;
+        } else if (b.getType().equals(Material.BUBBLE_COLUMN)){
+        	found = true;
+        } else if (b.getType().equals(Material.KELP)){
+        	found = true;
+        } else if (b.getType().equals(Material.BARRIER)){
+        	found = true;
+        }
+        return found;
+	}
+
+	
+	
 	private boolean doTeleportPlayer(CommandSender sender, Timestamp timestamp) {
 		Player player = (Player) sender;
 
-		setBoundaries();
+		World world = player.getWorld();
+
+		setBoundaries(world);
 		Location loc = player.getLocation();
 
 		Location newloc = loc;
@@ -89,20 +110,21 @@ public final class ecwild extends JavaPlugin {
 		newloc.setX(newX);
 		newloc.setZ(newZ);
 
-		World world = Bukkit.getWorld("world");
-		
 		double newY = world.getHighestBlockYAt(newloc);
 		newloc.setY(newY);
 
 		Block b = newloc.getBlock();
 		
-		for (int i = 5; i < 1; i--) {
+		int i = 100;
+		
+		while (i > 0) {
+			i--;
 			b = newloc.getBlock();
 
-            if (!b.getType().equals(Material.LAVA)){
-            	break;
-            }
-
+			if (!isForbidden(b)) {
+				break;
+			}
+			
             newX = getRandomCoordinate(minX, maxX);
     		newZ = getRandomCoordinate(minZ, maxZ);
 
@@ -112,6 +134,10 @@ public final class ecwild extends JavaPlugin {
     		newY = world.getHighestBlockYAt(newloc);
     		newloc.setY(newY);
 		}
+		
+		/*if (player.isOp()) {
+			player.sendMessage("RTP took " + String.valueOf(100 - i) + " attempts.");
+		}*/
 		
 		newloc.setY(newY + 1);
 
