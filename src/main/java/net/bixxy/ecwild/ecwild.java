@@ -59,7 +59,11 @@ public final class ecwild extends JavaPlugin {
 
 					Long lastTimestamp = usages.get(player.getUniqueId());
 
-					if (!player.isOp() || lastTimestamp != null && lastTimestamp + 5000 > timestamp.getTime()) {
+						if (player.isOp() && lastTimestamp != null ) {
+							lastTimestamp -= 5000;
+						}
+					
+					if (lastTimestamp != null && lastTimestamp + 5000 > timestamp.getTime()) {
 						sender.sendMessage("Please wait a bit.");
 					} else {
 						doTeleportPlayer(sender, timestamp);
@@ -83,7 +87,7 @@ public final class ecwild extends JavaPlugin {
         } else if (b.getType().equals(Material.WATER)){
         	found = true;
         } else if (b.getType().equals(Material.BUBBLE_COLUMN)){
-        	found = true;
+        	found = true; 
         } else if (b.getType().equals(Material.KELP)){
         	found = true;
         } else if (b.getType().equals(Material.BARRIER)){
